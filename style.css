@@ -1,0 +1,37 @@
+body {
+    text-align: center;
+    background-color:  #494a51;
+    color: #fff;
+}
+
+#Tilit {
+    text-align: left;
+    padding-left: 10vw;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.toiminto {
+color: #FFF;
+background-color: #2f353e;
+text-decoration: none;
+padding: 7px;
+margin: 10px;
+}
+
+#Tapahtumat {
+    display: flex;
+    flex-direction: column-reverse;
+    background-color: #57596a;
+    text-align: left;
+}
+
+.tapahtuma {
+    border-top: solid 3px black;
+    padding: 10px;
+}
