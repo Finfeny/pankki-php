@@ -2,6 +2,21 @@ body {
     text-align: center;
     background-color:  #494a51;
     color: #fff;
+    font-size: x-large;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#logout {
+    position: absolute;
+    right: 20px;
+}
+
+.loginInput {
+    width: 60vw;
+}
+
+.loginButton {
+    width: 60vw + 10px;
 }
 
 #Tilit {
@@ -24,6 +39,11 @@ padding: 7px;
 margin: 10px;
 }
 
+#TopTapahtumat {
+    display: inline-flex;
+    gap: 30px;
+}
+
 #Tapahtumat {
     display: flex;
     flex-direction: column-reverse;
@@ -34,4 +54,8 @@ margin: 10px;
 .tapahtuma {
     border-top: solid 3px black;
     padding: 10px;
+}
+
+.hidden {
+    display: none;
 }

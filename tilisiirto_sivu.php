@@ -13,7 +13,7 @@ session_start();
 <body>
     <a href="index.php">PHP pankki</a>
     <br><br>
-    <form method="POST" action="omasiirto.php" style='display: flex; flex-direction: column; gap: 10px'>
+    <form method="POST" action="tilisiirto.php" style='display: flex; flex-direction: column; gap: 10px'>
     <?php
         
         echo "<div style='display: flex; gap: 10px;'>Tilitä<select name='sender_account_id'>";
@@ -23,7 +23,7 @@ session_start();
         }
         echo "</select></div>";
 
-        echo "<div style='display: flex; gap: 10px;'>Tilille<input type='text' name='reciver_account_id' placeholder='Tilinumero'></div>";
+        echo "<div style='display: flex; gap: 10px;'>Tilille<input type='text' name='reciver_account_IBAN' placeholder='Tilinumero'></div>";
     ?>
         <input type="number" name="amount" placeholder="Määrä" style="">
         <input type="submit" value="Siirrä">
