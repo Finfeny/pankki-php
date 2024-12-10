@@ -1,4 +1,7 @@
 <?php
-    echo "ju";
-    var_dump($_GET);
+    session_start();
+    $_SESSION["limit"] = $_POST["limit"];
+    var_dump($_SESSION);
+    var_dump($_POST);
+    header("Location: index.php");
 ?>

@@ -7,11 +7,11 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>login</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body style="display : grid; min-height: 200px; margin-top: 40vh;">
-    <a href="index.php">PHP pankki</a>
+    <a>PHP pankki</a>
     <br><br>
     <form class="InputBox" method="POST" action="login.php" style='display: grid; justify-content: center; gap: 10px'>
         <input class="loginInput" type="text" name="userID" placeholder="Käyttäjätunnus">

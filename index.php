@@ -10,6 +10,10 @@ if (!isset($_SESSION["user_id"])) {
     header("Location: login_sivu.php");
     exit();
 }
+
+if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
+    $_SESSION["limit"] = "10";
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +21,7 @@ if (!isset($_SESSION["user_id"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>pankki</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>                   <!--   haetaan käyttäjän tiedot ja tilit -->
@@ -25,7 +29,11 @@ if (!isset($_SESSION["user_id"])) {
 <?php
     // tän vois pistää queryy ku bindataa $_SESSION muuttuja joho käyttäjä ei pääse käsiks ni ei sillee oo välii katenoidaaks
     $userData = $conn->prepare(
-        "SELECT id, nimi, varat, tili_id, tilinimi, amount, IBAN FROM kayttajat LEFT JOIN tilit ON kayttaja_id = id WHERE id = :id");
+        "SELECT id, nimi, varat, tili_id, tilinimi, amount, IBAN
+        FROM kayttajat
+        LEFT JOIN tilit
+        ON kayttaja_id = id
+        WHERE id = :id");
         $userData->execute(["id" => $_SESSION["user_id"]]);
         $userData = $userData->fetchAll();
         
@@ -57,29 +65,46 @@ if (!isset($_SESSION["user_id"])) {
         </div>
 
 
-        <div id="Tilit">                        <!-- tilit -->
-            <p>Tilit<p>
+        <div id="TilitBox">                        <!-- tilit -->
+        <p>Tilit</p>
             <p>Tileilläsi on realpath_cache_get <?php echo $_SESSION["varat"] ?>£</p>
-
+            <div id="Tilit">
                 <?php foreach ($userData as $data)
                 if ($data["tilinimi"])
-                    echo "<div class='tili'>" .$data["tilinimi"]. "   " .$data["amount"]."£<br>". $data["IBAN"]. "</div><br>";
+                    echo "<div class='tili' onClick='window.location.href=`näytä_tili.php?tili_id=".$data["tili_id"]."`'>" .
+                    $data["tilinimi"]. " " .
+                    $data["amount"]."£<br>". 
+                    (!empty($data["IBAN"]) ? $data["IBAN"] : "Tilillä ei ole numeroa
+                        <script>
+                            document.querySelector('.tili:last-child').style.color = 'red';
+                        </script>"). 
+                    "</div>";
                 ?>
+            </div>
         </div>
         <div id="TopTapahtumat">
-            <p id="Tapahtumat_teksti">Tapahtumat<p>
-            <select id="Tapahtumat_valinta" onchange="fetch('fetch.php?limit='+this.value)">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
+            <p id="Tapahtumat_teksti">Tapahtumat</p>
+            <form action="fetch.php" method="POST" style="padding-top: 20px;">
+                <select name="limit" id="Tapahtumat_valinta" onChange="this.form.submit()">
+                    <option value="" selected>max</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </form>
         </div>
         <div id="Tapahtumat">                   <!-- tapahtumat -->
             <?php
                 $tapahtumat = $conn->prepare(
-                    "SELECT information FROM tapahtumat WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id) LIMIT 10");
-                    $tapahtumat->execute(["account_id" => $userData[0]["tili_id"]]);
+                    "SELECT information 
+                    FROM tapahtumat 
+                    WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id) 
+                    LIMIT :limit");
+                    $tapahtumat->bindParam("limit", $_SESSION["limit"], PDO::PARAM_INT);
+                    $tapahtumat->bindParam("account_id", $userData[0]["tili_id"], PDO::PARAM_INT);
+                    $tapahtumat->execute();
                     $tapahtumat = $tapahtumat->fetchAll();
                     
                 if ($tapahtumat) {
