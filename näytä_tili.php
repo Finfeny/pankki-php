@@ -9,7 +9,8 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tili</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
     <a class="backarrow" href="index.php" style="position: absolute; left: 20px;">&#8592;</a>
@@ -27,9 +28,13 @@ session_start();
             
     ?>
     <div id="tilitiedot">
-        <h2 id="tilinimi"><?php echo $tiliData["tilinimi"] ?> <button onClick="editAccountName()">Muokkaa</button></h2>
+        <div id="tilinimiBox">
+            <h2 id="tilinimi"><?php echo $tiliData["tilinimi"] ?></h2>
+            <button onClick="$('#tilinimi').attr('contentEditable', 'true').css('color', '#b2f4ff').focus()">Muokkaa</button>
+        </div>
+        <!-- formi joka lähettää muokatun tilinimen kun poistutaan contentEditable elementistä-->
         <form action="muokkaa_tili.php" method="post">
-            <input type="text" name="newName" id="newName" style="display: none;">
+            <input type="hidden" name="newName" id="newName">
             <input type="hidden" name="tili_id" value="<?php echo $_GET["tili_id"] ?>">
             <input type="submit" value="Tallenna" style="display: none;">
         </form>
@@ -57,10 +62,22 @@ session_start();
     </div>
 </body>
 <script>
-    function editAccountName() {
-        document.getElementById("tilinimi").style.display = "none";
-        document.getElementById("newName").style.display = "flex";
-    }
+    
+    const tilinimi = document.getElementById("tilinimi");
+
+    tilinimi.addEventListener('blur', () => {
+        document.getElementById("newName").value = tilinimi.innerText;
+        document.querySelector("input[type='submit']").click();
+    });
+
+    tilinimi.addEventListener('keydown', (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            document.getElementById("newName").value = tilinimi.innerText;
+            document.querySelector("input[type='submit']").click();
+        }
+    });
+    
 </script>
 
 </html>

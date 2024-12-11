@@ -10,7 +10,7 @@ $reciver_account_IBAN = $_POST["reciver_account_IBAN"];
 
 $sql = $conn->prepare("SELECT tili_id FROM tilit WHERE IBAN = :reciver_account_IBAN");
 $sql->execute(["reciver_account_IBAN" => $reciver_account_IBAN]);
-$reciver_account_id = $sql->fetchAll()[0]["tili_id"];
+$reciver_account_id = $sql->fetch()["tili_id"];
 
 var_dump($reciver_account_id);
 
@@ -26,12 +26,13 @@ $information = $_SESSION["userData"][0]["nimi"] . " Siirsi " . $amount . "£ til
 echo $information;
 
 $conn->prepare(
-"INSERT INTO tapahtumat (amount, sender_account_id, reciver_account_id, information) 
-VALUES (:amount, :sender_account_id, :reciver_account_id, :information)")->execute([
-"amount" => $amount,
-"sender_account_id" => $sender_account_id,
-"reciver_account_id" => $reciver_account_id,
-"information" => $information
+"INSERT INTO tapahtumat (amount, sender_account_id, reciver_account_id, information, date)
+VALUES (:amount, :sender_account_id, :reciver_account_id, :information, NOW())"
+)->execute([
+    "amount" => $amount, 
+    "sender_account_id" => $sender_account_id, 
+    "reciver_account_id" => $reciver_account_id, 
+    "information" => $information
 ]);
 
 header("Location: index.php");

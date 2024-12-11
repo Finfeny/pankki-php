@@ -23,6 +23,7 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pankki</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>                   <!--   haetaan käyttäjän tiedot ja tilit -->
 
@@ -66,7 +67,23 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
 
 
         <div id="TilitBox">                        <!-- tilit -->
-        <p>Tilit</p>
+            <div id="tilitOtsikkoWlisäys">Tilit
+                <button 
+                    id="lisääTiliNappiPlus" 
+                    onClick="
+                    $('#tilitForm, #lisääTiliNappiMiinus').css('display', 'inline-block'); 
+                    $(this).css('display', 'none')"
+                    > +
+                </button>
+                <button 
+                    id="lisääTiliNappiMiinus" 
+                    style="display: none; padding-inline: 6px;"
+                    onClick="$('#tilitForm').css('display', 'none');
+                    $(this).css('display', 'none');
+                    $('#lisääTiliNappiPlus').css('display', 'inline-block')" 
+                    > -
+                </button>
+            </div>
             <p>Tileilläsi on realpath_cache_get <?php echo $_SESSION["varat"] ?>£</p>
             <div id="Tilit">
                 <?php foreach ($userData as $data)
@@ -80,6 +97,12 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                         </script>"). 
                     "</div>";
                 ?>
+            </div>                      <!-- tilin lisäys formi -->
+            <div id="tilitForm" style="display: none;">
+                <form action="luo_tili.php" method="POST">
+                    <input type="text" name="tilinimi" placeholder="tilinimi">
+                    <input type="submit" value="Luo tili">
+                </form>
             </div>
         </div>
         <div id="TopTapahtumat">
@@ -98,7 +121,7 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         <div id="Tapahtumat">                   <!-- tapahtumat -->
             <?php
                 $tapahtumat = $conn->prepare(
-                    "SELECT information 
+                    "SELECT information, date
                     FROM tapahtumat 
                     WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id) 
                     LIMIT :limit");
@@ -108,9 +131,12 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                     $tapahtumat = $tapahtumat->fetchAll();
                     
                 if ($tapahtumat) {
-                    foreach ($tapahtumat as $tapahtuma)
-                        echo "<div class='tapahtuma'>" .$tapahtuma["information"]. "</div><br>";
-                
+                    foreach ($tapahtumat as $tapahtuma) {
+                        if (!$tapahtuma["date"]) {
+                            $tapahtuma["date"] = "ajankohta tuntematon";
+                        }
+                        echo "<div class='tapahtuma'>" .$tapahtuma["information"]. "<br>" . explode(" ", $tapahtuma["date"])[1]. " ". explode(" ", $tapahtuma["date"])[0]. "</div><br>";
+                    }
                 } else {//      piilotetaan tapahtumat jos niitä ei ole
                     echo "<script>document.getElementById('Tapahtumat_teksti').style.display = 'none';</script>";
                 }

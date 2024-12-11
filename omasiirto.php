@@ -17,14 +17,20 @@ foreach ($_SESSION["userData"] as $data) {
 }
 
 $information = $_SESSION["userData"][0]["nimi"] . " Siirsi " . $amount . "£ tililtä " . $sender_account_name . " tilille " . $reciver_account_name;
-
-$conn->prepare(
-"INSERT INTO tapahtumat (amount, sender_account_id, reciver_account_id, information) 
-VALUES (:amount, :sender_account_id, :reciver_account_id, :information)")->execute([
-"amount" => $amount,
-"sender_account_id" => $sender_account_id,
-"reciver_account_id" => $reciver_account_id,
-"information" => $information
-]);
-
+try {
+    $conn->prepare(
+    "INSERT INTO tapahtumat (amount, sender_account_id, reciver_account_id, information, date)
+    VALUES (:amount, :sender_account_id, :reciver_account_id, :information, NOW())"
+    )->execute([
+        "amount" => $amount, 
+        "sender_account_id" => $sender_account_id, 
+        "reciver_account_id" => $reciver_account_id, 
+        "information" => $information
+    ]);
+} catch (PDOException $e) {
+    if ($e->getCode() == '45000') {
+        header("Location: omasiirto_sivu.php?error=1");
+        die;
+    }
+}
 header("Location: index.php");

@@ -34,5 +34,13 @@ session_start();
         <input type="number" name="amount" placeholder="Määrä" style="">
         <input type="submit" value="Siirrä">
     </form>
+    <div class="errormsg">
+        <?php
+        // var_dump($_GET);
+            if (isset($_GET["error"]) && $_GET["error"] == 1) {
+                echo "Tilillä ei ole tarpeeksi varoja";
+            }
+        ?>
+    </div>
 </body>
 </html>
