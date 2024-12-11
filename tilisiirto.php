@@ -1,7 +1,6 @@
 <?php
 include 'dbyhteys.php';
 session_start();
-// var_dump($_POST);
 
 $amount = $_POST["amount"];
 $sender_account_id = $_POST["sender_account_id"];
@@ -35,4 +34,4 @@ VALUES (:amount, :sender_account_id, :reciver_account_id, :information, NOW())"
     "information" => $information
 ]);
 
-header("Location: index.php");
+header("Location: sivut/index.php");

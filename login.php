@@ -11,8 +11,8 @@ $user_id = $sql->fetchAll()[0]["id"];
 
 if ($user_id) {
     $_SESSION["user_id"] = $user_id;
-    header("Location: index.php");
+    header("Location: sivut/index.php");
 } else {
     $_SESSION["login_status"] = "Käyttäjätunnus tai salasana väärin";
-    header("Location: login_sivu.php");
+    header("Location: sivut/login_sivu.php");
 }

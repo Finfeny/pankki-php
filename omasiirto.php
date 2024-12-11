@@ -29,8 +29,8 @@ try {
     ]);
 } catch (PDOException $e) {
     if ($e->getCode() == '45000') {
-        header("Location: omasiirto_sivu.php?error=1");
+        header("Location: sivut/omasiirto_sivu.php?error=1");
         die;
     }
 }
-header("Location: index.php");
+header("Location: sivut/index.php");

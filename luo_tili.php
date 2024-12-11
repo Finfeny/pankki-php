@@ -3,7 +3,7 @@ include 'dbyhteys.php';
 session_start();
 
 if (trim($_POST["tilinimi"]) == "") {
-    header("location: index.php");
+    header("location: sivut/index.php");
     die;
 }
 
@@ -15,5 +15,5 @@ $conn->prepare(
         "kayttaja_id" => $_SESSION["user_id"],
     ]);
 
-    header("location: index.php");
+    header("location: sivut/index.php");
 ?>

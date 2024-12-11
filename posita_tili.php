@@ -8,5 +8,5 @@ $conn->query(
     WHERE tili_id = '" .$_GET["tili_id"]. "' 
     AND kayttaja_id = '" .$_SESSION["user_id"]. "'");
 
-header("location: index.php");
+header("location: sivut/index.php");
 ?>

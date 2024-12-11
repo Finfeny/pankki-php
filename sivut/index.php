@@ -1,5 +1,5 @@
 <?php
-include 'dbyhteys.php';
+include '../dbyhteys.php';
 session_start();
 
 if (isset($_POST["user_id"])) {
@@ -7,7 +7,7 @@ if (isset($_POST["user_id"])) {
 }
 
 if (!isset($_SESSION["user_id"])) {
-    header("Location: login_sivu.php");
+    header("Location: sivut/login_sivu.php");
     exit();
 }
 
@@ -22,7 +22,7 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pankki</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>                   <!--   haetaan käyttäjän tiedot ja tilit -->
@@ -39,7 +39,7 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         $userData = $userData->fetchAll();
         
         echo '<a href="index.php">PHP pankki</a>'.
-        '<a id="logout" href="logout.php">Kirjaudu ulos</a>';
+        '<a id="logout" href="../logout.php">Kirjaudu ulos</a>';
 
         // jos käyttäjää ei löydy
         echo $userData==null ? "<br><br>Käyttäjää ei löytynyt" : "";
@@ -98,14 +98,14 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                             document.querySelector('.tili:last-child').style.color = 'red';
                         </script>").
                     ($data["amount"] != 0 ? "" :
-                        "<button id='uusiTiliPoista' onClick='event.stopPropagation(); window.location.href=`posita_tili.php?tili_id=".$data["tili_id"]."`'>
+                        "<button id='uusiTiliPoista' onClick='event.stopPropagation(); window.location.href=`../posita_tili.php?tili_id=".$data["tili_id"]."`'>
                             poista
                         </button>").
                     "</div>";       // stopPropagation käytettää ettei kutsu näytä_tili vaa menee suoraa posita_tili
                 ?>
             </div>                      <!-- tilin lisäys formi -->
             <div id="tilitForm" style="display: none; position: relative;">
-                <form action="luo_tili.php" method="POST">
+                <form action="../luo_tili.php" method="POST">
                     <input id="uusiTiliInput" type="text" name="tilinimi" placeholder="tilinimi">
                     <input id="uusiTiliSubmit" type="submit" value="Luo tili">
                 </form>
