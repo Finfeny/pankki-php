@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 11.12.2024 klo 13:35
--- Palvelimen versio: 10.4.27-MariaDB
--- PHP Version: 8.1.12
+-- Generation Time: 11.12.2024 klo 16:36
+-- Palvelimen versio: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -131,7 +131,8 @@ INSERT INTO `tilit` (`tili_id`, `tilinimi`, `IBAN`, `kayttaja_id`, `amount`) VAL
 (1, 'käyttötili', 'FI21 1234 5600 000 76', 23, 10),
 (2, 'etutili', 'FI12 3456 7890 987 65', 23, 250),
 (4, 'tuhlausili', 'FI09 8765 4321 234 56', 24, 25),
-(5, 'etutili', '', 24, 213);
+(5, 'etutili', '', 24, 213),
+(40, '123', '', 23, 0);
 
 --
 -- Indexes for dumped tables
@@ -178,7 +179,7 @@ ALTER TABLE `tapahtumat`
 -- AUTO_INCREMENT for table `tilit`
 --
 ALTER TABLE `tilit`
-  MODIFY `tili_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `tili_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- Rajoitteet vedostauluille

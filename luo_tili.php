@@ -1,6 +1,19 @@
 <?php
 include 'dbyhteys.php';
-var_dump($_POST); // array(1) { ["tilinimi"]=> string(7) "juutili" } 
+session_start();
 
+if (trim($_POST["tilinimi"]) == "") {
+    header("location: index.php");
+    die;
+}
 
+$conn->prepare(
+    "INSERT INTO tilit (tilinimi, kayttaja_id, amount) 
+    VALUES (:tilinimi, :kayttaja_id, amount)")->
+    execute([
+        "tilinimi" => $_POST["tilinimi"],
+        "kayttaja_id" => $_SESSION["user_id"],
+    ]);
+
+    header("location: index.php");
 ?>

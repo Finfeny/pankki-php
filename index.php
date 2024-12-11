@@ -68,7 +68,8 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
 
         <div id="TilitBox">                        <!-- tilit -->
             <div id="tilitOtsikkoWlisäys">Tilit
-                <button 
+                <button
+                    class="nappi1"
                     id="lisääTiliNappiPlus" 
                     onClick="
                     $('#tilitForm, #lisääTiliNappiMiinus').css('display', 'inline-block'); 
@@ -76,6 +77,7 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                     > +
                 </button>
                 <button 
+                    class="nappi1"
                     id="lisääTiliNappiMiinus" 
                     style="display: none; padding-inline: 6px;"
                     onClick="$('#tilitForm').css('display', 'none');
@@ -91,17 +93,21 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                     echo "<div class='tili' onClick='window.location.href=`näytä_tili.php?tili_id=".$data["tili_id"]."`'>" .
                     $data["tilinimi"]. " " .
                     $data["amount"]."£<br>". 
-                    (!empty($data["IBAN"]) ? $data["IBAN"] : "Tilillä ei ole numeroa
+                    (!empty($data["IBAN"]) ? $data["IBAN"] : "Tilillä ei ole numeroa. Odotetaan adminin hyväksyntää...
                         <script>
                             document.querySelector('.tili:last-child').style.color = 'red';
-                        </script>"). 
-                    "</div>";
+                        </script>").
+                    ($data["amount"] != 0 ? "" :
+                        "<button id='uusiTiliPoista' onClick='event.stopPropagation(); window.location.href=`posita_tili.php?tili_id=".$data["tili_id"]."`'>
+                            poista
+                        </button>").
+                    "</div>";       // stopPropagation käytettää ettei kutsu näytä_tili vaa menee suoraa posita_tili
                 ?>
             </div>                      <!-- tilin lisäys formi -->
-            <div id="tilitForm" style="display: none;">
+            <div id="tilitForm" style="display: none; position: relative;">
                 <form action="luo_tili.php" method="POST">
-                    <input type="text" name="tilinimi" placeholder="tilinimi">
-                    <input type="submit" value="Luo tili">
+                    <input id="uusiTiliInput" type="text" name="tilinimi" placeholder="tilinimi">
+                    <input id="uusiTiliSubmit" type="submit" value="Luo tili">
                 </form>
             </div>
         </div>
@@ -148,5 +154,20 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
     <form method="POST" action="index.php">
         <input name="user_id" placeholder="<?php echo $_SESSION["user_id"] ?>">
         <button type="submit">h</button>
+    </form>
 </body>
+<script>
+    
+    // vaihtaa tilin luonnin napiksi "+" tai "Luo tili" riippuen onko näyttö pieni vai ei
+    const mediaQuery = window.matchMedia('(min-width: 900px)');
+    
+    function updateSubmitValue() {
+        $("#uusiTiliSubmit").val(mediaQuery.matches ? "Luo tili" : "+");
+    }
+    
+    mediaQuery.addEventListener('change', updateSubmitValue);
+    
+    updateSubmitValue(mediaQuery);
+
+</script>
 </html>
