@@ -33,6 +33,11 @@ body {
     width: 70vw;
 }
 
+#tilitiedot {
+    background: #34363e;
+    padding-block: 1px;
+}
+
 a {
     color: #fff;
     text-decoration: none;

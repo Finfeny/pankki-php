@@ -1,8 +1,6 @@
 <?php
 include 'dbyhteys.php';
 session_start();
-var_dump($_GET); // array(1) { ["tili_id"]=> string(1) "1" }
-echo "<br>";
 ?>
 
 <!DOCTYPE html>
@@ -14,8 +12,55 @@ echo "<br>";
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <a class="backarrow" href="index.php" style="position: absolute; left: 20px;">&#8592;</a>
     <a href="index.php">PHP pankki</a>
     <br><br>
-    <h2><?php echo $_GET["tili_id"] ?></h2>
+    <?php 
+        $tiliData = $conn->query(
+            "SELECT tilinimi, IBAN, amount
+            FROM tilit 
+            WHERE tili_Id = '" . $_GET["tili_id"] . "' 
+            AND kayttaja_id = '" .$_SESSION["user_id"]. "'"
+            )->fetch();
+            
+            // var_dump($tiliData);
+            
+    ?>
+    <div id="tilitiedot">
+        <h2 id="tilinimi"><?php echo $tiliData["tilinimi"] ?> <button onClick="editAccountName()">Muokkaa</button></h2>
+        <form action="muokkaa_tili.php" method="post">
+            <input type="text" name="newName" id="newName" style="display: none;">
+            <input type="hidden" name="tili_id" value="<?php echo $_GET["tili_id"] ?>">
+            <input type="submit" value="Tallenna" style="display: none;">
+        </form>
+        <p><?php echo $tiliData["IBAN"] ?></p>
+        <p>realpath_cache_get: <?php echo $tiliData["amount"] ?>£</p>
+    </div>
+    <br>
+    <div id="Tapahtumat">                   <!-- tapahtumat -->
+        <?php
+            $tapahtumat = $conn->prepare(
+                "SELECT information
+                FROM tapahtumat
+                WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id)");
+                $tapahtumat->execute(["account_id" => $_GET["tili_id"]]);
+                $tapahtumat = $tapahtumat->fetchAll();
+                
+            if ($tapahtumat) {
+                foreach ($tapahtumat as $tapahtuma)
+                    echo "<div class='tapahtuma'>" .$tapahtuma["information"]. "</div><br>";
+            
+            } else {//      piilotetaan tapahtumat jos niitä ei ole
+                echo "<script>document.getElementById('Tapahtumat_teksti').style.display = 'none';</script>";
+            }
+        ?>
+    </div>
 </body>
+<script>
+    function editAccountName() {
+        document.getElementById("tilinimi").style.display = "none";
+        document.getElementById("newName").style.display = "flex";
+    }
+</script>
+
 </html>

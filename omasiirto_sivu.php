@@ -11,6 +11,7 @@ session_start();
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <a class="backarrow" href="index.php" style="position: absolute; left: 20px;">&#8592;</a>
     <a href="index.php">PHP pankki</a>
     <br><br>
     <form method="POST" action="omasiirto.php" style='display: flex; flex-direction: column; gap: 10px'>
