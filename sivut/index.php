@@ -7,7 +7,12 @@ if (isset($_POST["user_id"])) {
 }
 
 if (!isset($_SESSION["user_id"])) {
-    header("Location: sivut/login_sivu.php");
+    header("Location: login_sivu.php");
+    exit();
+}
+
+if ($_SESSION["user_id"] == 1) {
+    header("Location: admin_sivu.php");
     exit();
 }
 

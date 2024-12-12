@@ -33,7 +33,7 @@ session_start();
             <button onClick="$('#tilinimi').attr('contentEditable', 'true').css('color', '#b2f4ff').focus()">Muokkaa</button>
         </div>
         <!-- formi joka lähettää muokatun tilinimen kun poistutaan contentEditable elementistä-->
-        <form action="muokkaa_tili.php" method="post">
+        <form action="../muokkaa_tili.php" method="post">
             <input type="hidden" name="newName" id="newName">
             <input type="hidden" name="tili_id" value="<?php echo $_GET["tili_id"] ?>">
             <input type="submit" value="Tallenna" style="display: none;">
