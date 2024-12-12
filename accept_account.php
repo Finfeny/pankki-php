@@ -7,10 +7,7 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
     exit();
 }
 
-var_dump($_POST);
-echo "<br>";
-var_dump($_GET);
+$conn->query("UPDATE tilit SET IBAN = '". $_GET["IBAN"] ."' WHERE tili_id = '" .$_GET["tilinimi"]. "'");
 
-// $conn->query("INSERT INTO tilit WHERE kayttaja_id");
-
+header("location: sivut/admin_sivu.php");
 ?>

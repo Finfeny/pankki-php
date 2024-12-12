@@ -37,18 +37,22 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
                     <h3>IBAN</h3>
                 </div>
             <?php       //listataan tilit ja niiden tiedot
-                foreach ($pending_accounts as $pending_account) {
-                    ?>
-                        <div class='pending_tiliTaulu'>
-                            <div class='pendAccNimi'><?php echo $pending_account["nimi"]; ?></div>
-                            <div class='pendAccTili'><?php echo $pending_account["tilinimi"]; ?></div>
-                            <div style="display: flex; gap: 20px">
-                                <button onClick="GenerateUser(this)">Generate</button>
-                                <input class='pendAccIBAN'>
-                                <button onClick="window.location.href='../accept_account.php?tilinimi=<?php echo $pending_account["tili_id"]  ?>'">Hyväksy</button>
+                if ($pending_accounts) {
+                    foreach ($pending_accounts as $pending_account) {
+                        ?>
+                            <div class='pending_tiliTaulu'>
+                                <div class='pendAccNimi'><?php echo $pending_account["nimi"]; ?></div>
+                                <div class='pendAccTili'><?php echo $pending_account["tilinimi"]; ?></div>
+                                <div style="display: flex; gap: 20px">
+                                    <button onClick="GenerateUser(this)">Generate</button>
+                                    <input class='pendAccIBAN'>
+                                    <button onClick="AcceptAccount(this)">Hyväksy</button>
+                                </div>
                             </div>
-                        </div>
-                    <?php
+                        <?php
+                    }
+                } else {
+                    echo "No pending accounts";
                 }
             ?>
         </div>
@@ -61,6 +65,12 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
             IBAN += Math.floor(Math.random() * 10);
         }
         $(".pendAccIBAN", e.parentElement).val(IBAN);
+    }
+
+    function AcceptAccount(e){
+        IBAN = $(".pendAccIBAN", e.parentElement).val();
+        console.log(IBAN);
+        window.location.href=`../accept_account.php?tilinimi=<?php echo $pending_account["tili_id"]  ?>&IBAN=${IBAN}`
     }
 </script>
 </html>

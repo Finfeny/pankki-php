@@ -3,5 +3,5 @@
     $_SESSION["limit"] = $_POST["limit"];
     var_dump($_SESSION);
     var_dump($_POST);
-    header("Location: index.php");
+    header("Location: sivut/index.php");
 ?>

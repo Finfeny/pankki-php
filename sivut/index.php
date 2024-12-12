@@ -118,7 +118,7 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         </div>
         <div id="TopTapahtumat">
             <p id="Tapahtumat_teksti">Tapahtumat</p>
-            <form action="fetch.php" method="POST" style="padding-top: 20px;">
+            <form action="../fetch.php" method="POST" style="padding-top: 20px;">
                 <select name="limit" id="Tapahtumat_valinta" onChange="this.form.submit()">
                     <option value="" selected>max</option>
                     <option value="5">5</option>

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 11.12.2024 klo 16:36
--- Palvelimen versio: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Generation Time: 12.12.2024 klo 11:15
+-- Palvelimen versio: 10.4.27-MariaDB
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `kayttajat` (
   `id` int(11) NOT NULL,
-  `kayttajatunnus` varchar(255) NOT NULL,
+  `kayttajatunnus` varchar(20) NOT NULL,
   `salasana` varchar(255) NOT NULL,
   `nimi` varchar(100) NOT NULL,
   `ika` tinyint(120) NOT NULL,
@@ -42,8 +42,9 @@ CREATE TABLE `kayttajat` (
 --
 
 INSERT INTO `kayttajat` (`id`, `kayttajatunnus`, `salasana`, `nimi`, `ika`, `sukupuoli`, `varat`) VALUES
+(1, 'root', '', 'admin', 0, 0, 0),
 (23, '123', '223', 'Aada', 5, 2, 239),
-(24, '223', '123', 'Sofia', 12, 1, 256),
+(24, '', '', 'Sofia', 12, 1, 256),
 (25, '', '', 'Väinö', 2, 0, 602);
 
 -- --------------------------------------------------------
@@ -66,24 +67,17 @@ CREATE TABLE `tapahtumat` (
 --
 
 INSERT INTO `tapahtumat` (`id`, `amount`, `sender_account_id`, `reciver_account_id`, `information`, `date`) VALUES
-(11, 5, 2, 1, 'Aada teki 5£ omasiirron tililtä: e tilille: k', NULL),
-(12, 10, 2, 1, 'Aada teki 10£ omasiirron tililtä: etutili tilille: käyttötili', NULL),
-(14, 1, 2, 1, 'Aada teki 1£ tilisiirron tililtä: etutili tilille: käyttötili', NULL),
-(15, 1, 4, 1, 'Aada teki 1£ tilisiirron tililtä: tuhlaustili tilille: käyttötili', NULL),
-(16, 2, 1, 4, 'Aada teki 2£ tilisiirron tililtä: tuhlaustili tilille: käyttötili', NULL),
-(19, 2, 4, 5, 'Sofia Siirsi 2£ tililtä tuhlaustili tilille etutili', NULL),
-(20, 10, 4, 2, 'Sofia Siirsi 10£ tililtä tuhlaustili tilille FI12 3456 7890 987 65', NULL),
-(21, 2, 1, 2, 'Aada Siirsi 2£ tililtä käyttötili tilille etutili', '2024-12-11 00:00:00'),
-(22, 3, 2, 1, 'Aada Siirsi 3£ tililtä etutili tilille käyttötili', '2024-12-11 00:00:00'),
-(23, 10, 1, 4, 'Aada Siirsi 10£ tililtä käyttötili tilille FI09 8765 4321 234 56', '2024-12-11 00:00:00'),
-(24, 12, 4, 4, 'Sofia Siirsi 12£ tililtä tuhlaustili tilille FI09 8765 4321 234 56', '2024-12-11 00:00:00'),
-(28, 0, 4, 4, 'Sofia Siirsi £ tililtä tuhlaustili tilille tuhlaustili', '2024-12-11 00:00:00'),
-(29, 0, 4, 4, 'Sofia Siirsi £ tililtä tuhlaustili tilille tuhlaustili', '2024-12-11 00:00:00'),
-(30, 1, 4, 5, 'Sofia Siirsi 1£ tililtä tuhlaustili tilille etutili', '2024-12-11 00:00:00'),
-(31, 1, 4, 5, 'Sofia Siirsi 1£ tililtä tuhlaustili tilille etutili', '2024-12-11 00:00:00'),
-(32, 1, 5, 4, 'Sofia Siirsi 1£ tililtä etutili tilille tuhlaustili', '2024-12-11 00:00:00'),
-(33, 1, 4, 5, 'Sofia Siirsi 1£ tililtä tuhlaustili tilille etutili', '2024-12-11 12:13:21'),
-(35, 21, 4, 2, 'Sofia Siirsi 21£ tililtä tuhlaustili tilille FI12 3456 7890 987 65', '2024-12-11 12:36:44');
+(33, 10, 1, 2, 'Aada Siirsi 10£ tililtä käyttötili tilille etutili', NULL),
+(34, 2, 2, 1, 'Aada Siirsi 2£ tililtä etutili tilille käyttötili', NULL),
+(35, 1, 1, 2, 'Aada Siirsi 1£ tililtä käyttötili tilille etutili', NULL),
+(48, 12, 1, 2, 'Aada Siirsi 12£ tililtä käyttötili tilille FI12 3456 7890 987 65', NULL),
+(49, 1, 2, 1, 'Aada Siirsi 1£ tililtä etutili tilille käyttötili', NULL),
+(51, 14, 2, 1, 'Aada Siirsi 14£ tililtä etutili tilille käyttötili', NULL),
+(52, 4, 1, 4, 'Aada Siirsi 4£ tililtä käyttötili tilille FI09 8765 4321 234 56', NULL),
+(53, 1, 1, 2, 'Aada Siirsi 1£ tililtä käyttötili tilille etutili', NULL),
+(54, 2, 1, 2, 'Aada Siirsi 2£ tililtä käyttötili tilille etutili', NULL),
+(55, 2, 1, 4, 'Aada Siirsi 2£ tililtä käyttötili tilille FI09 8765 4321 234 56', NULL),
+(56, 1, 1, 2, 'Aada Siirsi 1£ tililtä käyttötili tilille etutili', NULL);
 
 --
 -- Herättimet `tapahtumat`
@@ -128,11 +122,11 @@ CREATE TABLE `tilit` (
 --
 
 INSERT INTO `tilit` (`tili_id`, `tilinimi`, `IBAN`, `kayttaja_id`, `amount`) VALUES
-(1, 'käyttötili', 'FI21 1234 5600 000 76', 23, 10),
-(2, 'etutili', 'FI12 3456 7890 987 65', 23, 250),
-(4, 'tuhlausili', 'FI09 8765 4321 234 56', 24, 25),
-(5, 'etutili', '', 24, 213),
-(40, '123', '', 23, 0);
+(1, 'käyttötili', 'FI21 1234 5600 000 76', 23, 14),
+(2, 'etutili', 'FI12 3456 7890 987 65', 23, 210),
+(4, 'tuhlaustili', 'FI09 8765 4321 234 56', 24, 55),
+(5, 'etutili', 'FI7200389245730558', 24, 217),
+(8, 'Jea', '', 23, 0);
 
 --
 -- Indexes for dumped tables
@@ -173,13 +167,13 @@ ALTER TABLE `kayttajat`
 -- AUTO_INCREMENT for table `tapahtumat`
 --
 ALTER TABLE `tapahtumat`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `tilit`
 --
 ALTER TABLE `tilit`
-  MODIFY `tili_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `tili_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Rajoitteet vedostauluille
