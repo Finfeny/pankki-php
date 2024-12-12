@@ -158,8 +158,28 @@ margin: 10px;
 
 /* ADMIN */
 
-.pending_tili {
+h3 {
+    margin: 0;
+}
+
+.pending_tiliTaulu {
     background: #383941;
     margin-block: 10px;
     padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    gap: 130px;
+}
+
+#pendAccHeader {
+    display: flex;
+    justify-content: space-around;
+}
+
+.pendAccNimi {
+    padding-left: 115px;
+}
+
+.pendAccTili {
+    padding-left: 140px;
 }

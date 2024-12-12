@@ -2,6 +2,9 @@ sivun vaihto:
 skaalautumine kirjaudu ulos nappii ja php pankki otsikkoo
 loginii joku error jos kirjottaa väärät tunnukset
 jostai syyst jos tilisiirto numero ei mätsää ni rahat vaa katoo
+uuden käyttäjän luonti
+
+Bogdan:
 normal user voi ilmoita tilin poistuminen adminille. jos poistuminen ilmoitus on tehty, voi myös undo sen.
 admin voi hyväksyä tilin poistuminne.
 HUOMIO! Älä poista oikeasti mitään tietokannasta. Vai merkata poistetuksi. (TINY INT 0 by default && not null)
