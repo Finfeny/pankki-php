@@ -12,7 +12,7 @@ session_start();
 </head>
 <body>
     <a class="backarrow" href="index.php" style="position: absolute; left: 20px;">&#8592;</a>
-    <a href="index.php">PHP pankki</a>
+    <a id="title" href="index.php">PHP pankki</a>
     <br><br>
     <form method="POST" action="../tilisiirto.php" style='display: flex; flex-direction: column; gap: 10px'>
     <?php

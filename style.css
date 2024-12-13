@@ -1,4 +1,5 @@
 body {
+    margin: 0;
     text-align: center;
     background-color:  #494a51;
     color: #fff;
@@ -28,7 +29,7 @@ a {
 
 #TilitBox {
     text-align: left;
-    padding-left: 10vw;
+    padding-left: 2vw;
     background-color: #3a3a40;
     padding-block: 20px;
 }
@@ -49,7 +50,7 @@ a {
     margin-block: 10px;
     background-color: #2c2c33;
     padding: 10px;
-    width: 70vw;
+    width: calc(75vw + (10vw - 100px));
     position: relative;
     padding-right: 130px;
 }
@@ -63,7 +64,7 @@ a {
     background: #2c2c33;
     color: #FFF;
     padding: 10px;
-    width: 70vw;
+    width: calc(75vw + (10vw - 100px));
     font-size: x-large;
     padding-bottom: 50px;
     border: none;
@@ -118,11 +119,11 @@ margin: 10px;
 #Tapahtumat {
     display: flex;
     flex-direction: column-reverse;
-    background-color: #57596a;
+    background-color: #3a3a40;
     text-align: left;
 }
 
-.tapahtuma {
+.tapahtumaDesc {
     border-top: solid 3px black;
     padding: 10px;
 }
@@ -144,16 +145,6 @@ margin: 10px;
     margin-left: 30vw;
 }
 
-@media screen and (min-width: 1300px) {
-    /* .tili {
-        width: 910px;
-    }
-
-    #uusiTiliInput {
-        width: 910px;
-    }
-     */
-}
 
 
 /* ADMIN */
@@ -182,4 +173,16 @@ h3 {
 
 .pendAccTili {
     padding-left: 140px;
+}
+
+@media screen and (max-width: 900px) {
+
+    #logout {
+        font-size: 3.5vw;
+        padding: calc(20px + (2vw * -1));
+    }
+    
+    #title {
+        font-size: calc(2.5vw + 10px);
+    }
 }

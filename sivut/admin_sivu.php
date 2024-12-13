@@ -3,7 +3,7 @@ include '../dbyhteys.php';
 session_start();
 
 if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
-    header("Location: login_sivu.php");
+    header("Location: index.php");
     exit();
 }
 ?>
@@ -19,7 +19,7 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
 </head>
 <body>
     <div id="admin">
-        <a href="index.php">PHP pankki</a>
+        <a id="title" href="index.php">PHP pankki</a>
         <a id="logout" href="../logout.php">Kirjaudu ulos</a>
         <br><br>
         <div id="tiliPyynnöt">
@@ -47,6 +47,7 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
                                     <button onClick="GenerateUser(this)">Generate</button>
                                     <input class='pendAccIBAN'>
                                     <button onClick="AcceptAccount(this)">Hyväksy</button>
+                                    <input class='pendAccId' style="display: none" value="<?php echo $pending_account["tili_id"]; ?>">
                                 </div>
                             </div>
                         <?php
@@ -69,8 +70,9 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
 
     function AcceptAccount(e){
         IBAN = $(".pendAccIBAN", e.parentElement).val();
+        tili_id = $(".pendAccId", e.parentElement).val();
         console.log(IBAN);
-        window.location.href=`../accept_account.php?tilinimi=<?php echo $pending_account["tili_id"]  ?>&IBAN=${IBAN}`
+        window.location.href=`../accept_account.php?tili_id=${tili_id}&IBAN=${IBAN}`
     }
 </script>
 </html>

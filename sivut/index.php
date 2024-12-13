@@ -43,7 +43,7 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         $userData->execute(["id" => $_SESSION["user_id"]]);
         $userData = $userData->fetchAll();
         
-        echo '<a href="index.php">PHP pankki</a>'.
+        echo '<a id="title" href="index.php">PHP pankki</a>'.
         '<a id="logout" href="../logout.php">Kirjaudu ulos</a>';
 
         // jos käyttäjää ei löydy
@@ -146,7 +146,7 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                         if (!$tapahtuma["date"]) {
                             $tapahtuma["date"] = "ajankohta tuntematon";
                         }
-                        echo "<div class='tapahtuma'>" .$tapahtuma["information"]. "<br>" . explode(" ", $tapahtuma["date"])[1]. " ". explode(" ", $tapahtuma["date"])[0]. "</div><br>";
+                        echo "<div class='tapahtumaDesc'>" .$tapahtuma["information"]. "<div class'tapahtumaInfo'>" . explode(" ", $tapahtuma["date"])[1]. " ". explode(" ", $tapahtuma["date"])[0]. "</div></div>";
                     }
                 } else {//      piilotetaan tapahtumat jos niitä ei ole
                     echo "<script>document.getElementById('Tapahtumat_teksti').style.display = 'none';</script>";
