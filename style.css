@@ -118,7 +118,7 @@ margin: 10px;
 
 #Tapahtumat {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     background-color: #3a3a40;
     text-align: left;
 }

@@ -16,6 +16,13 @@ foreach ($_SESSION["userData"] as $data) {
     }
 }
 
+// Jos koettaa siirtää rahaa samalle tilille
+if ($reciver_account_id == $sender_account_id) {
+    $_SESSION["error"] = "Et voi siirtää rahaa samalle tilille";
+    header("Location: sivut/omasiirto_sivu.php?error=1");
+    die;
+}
+
 $information = $_SESSION["userData"][0]["nimi"] . " Siirsi " . $amount . "£ tililtä " . $sender_account_name . " tilille " . $reciver_account_name;
 try {
     $conn->prepare(
@@ -27,10 +34,12 @@ try {
         "reciver_account_id" => $reciver_account_id, 
         "information" => $information
     ]);
+    // jos ei riitä rahat
 } catch (PDOException $e) {
     if ($e->getCode() == '45000') {
+        $_SESSION["error"] = explode("1644", $e->getMessage())[1];
         header("Location: sivut/omasiirto_sivu.php?error=1");
         die;
     }
 }
-header("Location: sivut/index.php");
+// header("Location: sivut/index.php");

@@ -131,15 +131,27 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         </div>
         <div id="Tapahtumat">                   <!-- tapahtumat -->
             <?php
-                $tapahtumat = $conn->prepare(
-                    "SELECT information, date
-                    FROM tapahtumat 
-                    WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id) 
-                    LIMIT :limit");
-                    $tapahtumat->bindParam("limit", $_SESSION["limit"], PDO::PARAM_INT);
-                    $tapahtumat->bindParam("account_id", $userData[0]["tili_id"], PDO::PARAM_INT);
-                    $tapahtumat->execute();
-                    $tapahtumat = $tapahtumat->fetchAll();
+                $query = "SELECT information, date FROM tapahtumat WHERE (";
+
+                $conditions = [];
+                $params = [];
+                foreach ($userData as $index => $data) {
+                    $conditions[] = "reciver_account_id = :account_id_$index";
+                    $conditions[] = "sender_account_id = :account_id_$index";
+                    $params["account_id_$index"] = $data["tili_id"];
+                }
+
+                $query .= implode(" OR ", $conditions) . ") ORDER BY date DESC LIMIT :limit";
+
+                $tapahtumat = $conn->prepare($query);
+                $tapahtumat->bindValue(":limit", $_SESSION["limit"], PDO::PARAM_INT);
+                
+                foreach ($params as $key => $value) {
+                    $tapahtumat->bindValue(":$key", $value, PDO::PARAM_INT);
+                }
+                
+                $tapahtumat->execute();
+                $tapahtumat = $tapahtumat->fetchAll();
                     
                 if ($tapahtumat) {
                     foreach ($tapahtumat as $tapahtuma) {

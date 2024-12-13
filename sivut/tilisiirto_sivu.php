@@ -17,10 +17,10 @@ session_start();
     <form method="POST" action="../tilisiirto.php" style='display: flex; flex-direction: column; gap: 10px'>
     <?php
         
-        echo "<div style='display: flex; gap: 10px;'>Tilitä<select name='sender_account_id'>";
+        echo "<div style='display: flex; gap: 10px;'>Tilitä<select name='sender_account_IBAN'>";
 
         foreach ($_SESSION["userData"] as $data) {
-            echo "<option value='".$data["tili_id"]."'>".$data["tilinimi"]."</option>";
+            echo "<option value='".$data["tili_id"]. "/".$data["IBAN"]."'>".$data["tilinimi"]."</option>";
         }
         echo "</select></div>";
 
@@ -29,5 +29,13 @@ session_start();
         <input type="number" name="amount" placeholder="Määrä" style="">
         <input type="submit" value="Siirrä">
     </form>
+    <div class="errormsg">
+        <?php
+            if (isset($_SESSION["error"])) {
+                echo $_SESSION["error"];
+                unset($_SESSION["error"]);
+            }
+        ?>
+    </div>
 </body>
 </html>
