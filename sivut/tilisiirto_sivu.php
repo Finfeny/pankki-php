@@ -26,8 +26,8 @@ session_start();
 
         echo "<div style='display: flex; gap: 10px;'>Tilille<input type='text' name='reciver_account_IBAN' placeholder='Tilinumero'></div>";
     ?>
-        <input type="number" name="amount" placeholder="Määrä" style="">
-        <input type="submit" value="Siirrä">
+        <input type="number" name="amount" placeholder="Määrä" style="padding: 5px">
+        <input type="submit" value="Siirrä" style="padding: 5px">
     </form>
     <div class="errormsg">
         <?php

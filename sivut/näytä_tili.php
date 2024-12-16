@@ -47,7 +47,7 @@ session_start();
             $tapahtumat = $conn->prepare(
                 "SELECT information, date
                 FROM tapahtumat
-                WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id)");
+                WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id) ORDER BY date DESC");
                 $tapahtumat->execute(["account_id" => $_GET["tili_id"]]);
                 $tapahtumat = $tapahtumat->fetchAll();
             

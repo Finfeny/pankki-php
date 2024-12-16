@@ -44,7 +44,7 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
                                 <div class='pendAccNimi'><?php echo $pending_account["nimi"]; ?></div>
                                 <div class='pendAccTili'><?php echo $pending_account["tilinimi"]; ?></div>
                                 <div style="display: flex; gap: 20px">
-                                    <button onClick="GenerateUser(this)">Generate</button>
+                                    <button onClick="GenerateUserIBAN(this)">Generate</button>
                                     <input class='pendAccIBAN'>
                                     <button onClick="AcceptAccount(this)">Hyväksy</button>
                                     <input class='pendAccId' style="display: none" value="<?php echo $pending_account["tili_id"]; ?>">
@@ -57,9 +57,47 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
                 }
             ?>
         </div>
+        <div id="pendigAccountDeletions">
+            <?php
+                $pending_account_deletions = $conn->query(
+                    "SELECT tilit.tilinimi, kayttajat.nimi, tilit.tili_id 
+                    FROM tilit, kayttajat
+                    WHERE tilit.kayttaja_id = kayttajat.id 
+                    AND deleted = 1")->fetchAll();
+            ?>
+                <h2>pending account deletions</h2>
+                <div id='pendAccHeader'>
+                    <h3>nimi</h3>
+                    <h3>tilinimi</h3>
+                    <h3>IBAN</h3>
+                </div>
+            <?php       //listataan tilit ja niiden tiedot
+                if ($pending_account_deletions) {
+                    foreach ($pending_account_deletions as $pending_account_deletion) {
+                        ?>
+                            <div class='pendingDel_tiliTaulu'>
+                                <div class='pendAccDelNimi'><?php echo $pending_account_deletion["nimi"]; ?></div>
+                                <div class='pendAccDelTili'><?php echo $pending_account_deletion["tilinimi"]; ?></div>
+                                <div style="display: flex; gap: 20px">
+                                    <button onClick="AcceptAccountDeletion(this)">Hyväksy</button>
+                                    <input class='pendAccId' style="display: none" value="<?php echo $pending_account_deletion["tili_id"]; ?>">
+                                </div>
+                            </div>
+                        <?php
+                    }
+                } else {
+                    echo "No pending account deletions";
+                }
+            ?>
+    </div>
+        <!--degub -->
+        <form method="POST" action="index.php">
+            <input name="user_id" placeholder="<?php echo $_SESSION["user_id"] ?>">
+            <button type="submit">id</button>
+        </form>
 </body>
 <script>
-    function GenerateUser(e) {
+    function GenerateUserIBAN(e) {
         console.log(e);
         let IBAN = "FI";
         for (let i = 0; i < 16; i++) {
@@ -73,6 +111,11 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
         tili_id = $(".pendAccId", e.parentElement).val();
         console.log(IBAN);
         window.location.href=`../accept_account.php?tili_id=${tili_id}&IBAN=${IBAN}`
+    }
+
+    function AcceptAccountDeletion(e){
+        tili_id = $(".pendAccId", e.parentElement).val();
+        window.location.href=`../accept_account_deletion.php?tili_id=${tili_id}`
     }
 </script>
 </html>

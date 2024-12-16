@@ -2,8 +2,8 @@
 include 'dbyhteys.php';
 session_start();
 $amount = $_POST["amount"];
-$sender_account_id = $_POST["sender_account_id"];
-$reciver_account_id = $_POST["reciver_account_id"];
+$sender_account_id = explode("|", $_POST["sender_account_id"])[0];
+$reciver_account_id = explode("|", $_POST["reciver_account_id"])[0];
 
 //etsitään tilien nimet userDatasta id:n perusteella
 foreach ($_SESSION["userData"] as $data) {
@@ -42,4 +42,4 @@ try {
         die;
     }
 }
-// header("Location: sivut/index.php");
+header("Location: sivut/index.php");
