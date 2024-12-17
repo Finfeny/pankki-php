@@ -142,42 +142,12 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                 </select>
             </form>
         </div>
-        <div id="Tapahtumat">                   <!-- tapahtumat -->
-            <?php
-                $query = "SELECT information, date FROM tapahtumat WHERE (";
+        <!--        kokeilen tälläst systeemii et ladataan tapahtumat ku scrollataan ni sitä mukaa       -->
 
-                $conditions = [];
-                $params = [];
-                foreach ($userData as $index => $data) {
-                    $conditions[] = "reciver_account_id = :account_id_$index";
-                    $conditions[] = "sender_account_id = :account_id_$index";
-                    $params["account_id_$index"] = $data["tili_id"];
-                }
-
-                $query .= implode(" OR ", $conditions) . ") ORDER BY date DESC LIMIT :limit";
-
-                $tapahtumat = $conn->prepare($query);
-                $tapahtumat->bindValue(":limit", $_SESSION["limit"], PDO::PARAM_INT);
-                
-                foreach ($params as $key => $value) {
-                    $tapahtumat->bindValue(":$key", $value, PDO::PARAM_INT);
-                }
-                
-                $tapahtumat->execute();
-                $tapahtumat = $tapahtumat->fetchAll();
-                    
-                if ($tapahtumat) {
-                    foreach ($tapahtumat as $tapahtuma) {
-                        if (!$tapahtuma["date"]) {
-                            $tapahtuma["date"] = "ajankohta tuntematon";
-                        }
-                        echo "<div class='tapahtumaDesc'>" .$tapahtuma["information"]. "<div class'tapahtumaInfo'>" . explode(" ", $tapahtuma["date"])[1]. " ". explode(" ", $tapahtuma["date"])[0]. "</div></div>";
-                    }
-                } else {//      piilotetaan tapahtumat jos niitä ei ole
-                    echo "<script>document.getElementById('Tapahtumat_teksti').style.display = 'none';</script>";
-                }
-            ?>
+        <div id="Tapahtumat">              <!-- tapahtumat -->
+            <!-- Rows will be dynamically loaded here -->
         </div>
+        <div id="loading" style="display: none;">Loading...</div>
     </div>
 </body>
 <script>
@@ -192,6 +162,108 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
     mediaQuery.addEventListener('change', updateSubmitValue);
     
     updateSubmitValue(mediaQuery);
+
+    
+    // lataa tapahtumat ku scrollataan nopeuden perusteella
+
+    let offset = 0; // Tracks how many rows have been loaded
+    let isLoading = false; // Prevents overlapping requests
+    let allDataLoaded = false; // Stops fetching when no more data is available
+    let lastScrollY = 0; // Stores the previous scroll position
+    let lastTime = Date.now(); // Tracks the last time the scroll event fired
+
+    const container = document.getElementById("Tapahtumat");
+
+    async function fetchRows(limit) {
+        if (isLoading || allDataLoaded) return; // Stop if already loading or all data is loaded
+        isLoading = true;
+
+        document.getElementById("loading").style.display = "block";
+
+        try {
+            // Fetch rows from server
+            const response = await fetch(`../fetch_rows.php?offset=${offset}&limit=${limit}`);
+            const data = await response.json();
+
+            // If no data is returned or fewer rows than limit, mark all data as loaded
+            if (data.length < limit) {
+                allDataLoaded = true;
+                console.log("All rows have been fetched!");
+            }
+
+            // Append rows to container
+            data.forEach(row => {
+                const div = document.createElement("div");
+                div.className = "tapahtumaDesc";
+                if (!row.date) {
+                    row.date = "tuntematon ajankohta";
+                }
+                div.innerHTML = `
+                    ${row.information}
+                    <div>${row.date}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            offset += data.length; // Update offset
+        } catch (error) {
+            console.error("Error fetching rows:", error);
+        }
+
+        document.getElementById("loading").style.display = "none";
+        isLoading = false;
+    }
+
+    function calculateDynamicLimit() {
+        const currentScrollY = window.scrollY; // Current scroll position
+        const currentTime = Date.now(); // Current time in milliseconds
+
+        // Calculate distance and time difference
+        const distanceScrolled = Math.abs(currentScrollY - lastScrollY);
+        const timeElapsed = currentTime - lastTime;
+
+        // Scroll speed = distance per unit time (pixels per 100ms for simplicity)
+        const scrollSpeed = (distanceScrolled * 10) / (timeElapsed || 1);
+
+        console.log("Scroll Speed:", scrollSpeed);
+
+        // Update the last position and time
+        lastScrollY = currentScrollY;
+        lastTime = currentTime;
+
+        if (scrollSpeed > 90) return 0; // Reloading the page causes sometimes high scroll speed
+
+        // Determine the number of rows to fetch based on scroll speed
+        if (scrollSpeed > 25) return 40; // Really Fast scroll → fetch 40 rows
+        if (scrollSpeed > 20) return 20; // Fast scroll → fetch 20 rows
+        if (scrollSpeed > 15) return 15; // Medium scroll → fetch 15 rows
+        if (scrollSpeed > 10) return 10; // Slow Medium scroll → fetch 10 rows
+        if (scrollSpeed > 5) return 5; // Slow scroll → fetch 5 rows
+        return 3; // Really slow scroll → fetch 3 rows
+    }
+
+    function throttle(func, delay) {
+        let timeout = null;
+        return (...args) => {
+            if (!timeout) {
+                timeout = setTimeout(() => {
+                    func.apply(this, args);
+                    timeout = null;
+                }, delay);
+            }
+        };
+    }
+
+    window.addEventListener("scroll", throttle(() => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+        const limit = calculateDynamicLimit();
+        fetchRows(limit);
+    }
+    }, 200)); // Throttle to fire once every 200ms
+
+    // Initial load
+    fetchRows(10);
+
 
 </script>
 </html>
