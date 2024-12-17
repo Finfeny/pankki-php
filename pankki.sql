@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 16.12.2024 klo 13:36
+-- Generation Time: 17.12.2024 klo 09:00
 -- Palvelimen versio: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -124,13 +124,35 @@ INSERT INTO `tapahtumat` (`id`, `amount`, `sender_account_id`, `reciver_account_
 (117, 100, 1, 2, 'Aada Siirsi 100£ tililtä käyttötili tilille etutili', '2024-12-16 13:41:05'),
 (118, 100, 2, 1, 'Aada Siirsi 100£ tililtä etutili tilille käyttötili', '2024-12-16 13:41:20'),
 (119, 1, 1, 41, 'Aada Siirsi 1£ tililtä käyttötili tilille testi', '2024-12-16 14:22:34'),
-(120, 1, 41, 1, 'Aada Siirsi 1£ tililtä FI1267691940048199 tilille FI21 1234 5600 000 76', '2024-12-16 14:23:05');
+(120, 1, 41, 1, 'Aada Siirsi 1£ tililtä FI1267691940048199 tilille FI21 1234 5600 000 76', '2024-12-16 14:23:05'),
+(121, 1, 1, 41, 'Aada Siirsi 1£ tililtä FI21 1234 5600 000 76 tilille FI1267691940048199', '2024-12-17 09:54:26'),
+(122, 1, 41, 1, 'Aada Siirsi 1£ tililtä testi tilille käyttötili', '2024-12-17 09:54:34'),
+(123, 2, 1, 41, 'Aada Siirsi 2£ tililtä FI21 1234 5600 000 76 tilille FI1267691940048199', '2024-12-17 09:56:02'),
+(124, 2, 41, 1, 'Aada Siirsi 2£ tililtä testi tilille käyttötili', '2024-12-17 09:56:24');
 
 --
 -- Herättimet `tapahtumat`
 --
 DELIMITER $$
-CREATE TRIGGER `update_tilit_receiver` BEFORE INSERT ON `tapahtumat` FOR EACH ROW UPDATE tilit SET amount = amount + NEW.amount WHERE tili_id = NEW.reciver_account_id
+CREATE TRIGGER `update_tilit_receiver` BEFORE INSERT ON `tapahtumat` FOR EACH ROW BEGIN
+    DECLARE receiver_deleted INT;
+
+    -- Check if the receiver account is deleted
+    SELECT deleted INTO receiver_deleted
+    FROM tilit
+    WHERE tili_id = NEW.reciver_account_id;
+
+    -- If the receiver account is deleted, raise an error
+    IF (receiver_deleted = 1 OR receiver_deleted = 2) THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Vastaanottajan tili on poistettu. Mitä nää koetat?';
+    ELSE
+        -- Update the receiver's account balance
+        UPDATE tilit 
+        SET amount = amount + NEW.amount 
+        WHERE tili_id = NEW.reciver_account_id;
+    END IF;
+END
 $$
 DELIMITER ;
 DELIMITER $$
@@ -174,11 +196,11 @@ INSERT INTO `tilit` (`tili_id`, `tilinimi`, `IBAN`, `kayttaja_id`, `amount`, `de
 (2, 'etutili', 'FI12 3456 7890 987 65', 23, 3600, 0),
 (4, 'tuhlaustili', 'FI09 8765 4321 234 56', 24, 50, 0),
 (5, 'etutili', 'FI5912723279897644', 24, 1900, 0),
-(11, 'miut', 'FI8461093876018015', 24, 0, 0),
+(11, 'miut', 'FI8461093876018015', 24, 0, 1),
 (31, 'käyttötili', 'FI9126150783300965', 53, 100, 0),
 (32, 'etutili', 'FI1033351125869550', 53, 1000, 0),
 (34, 'fsa', 'FI0410585696836383', 53, 0, 0),
-(41, 'testi', 'FI1267691940048199', 23, 0, 2);
+(41, 'testi', 'FI1267691940048199', 23, 0, 0);
 
 --
 -- Indexes for dumped tables
@@ -219,13 +241,13 @@ ALTER TABLE `kayttajat`
 -- AUTO_INCREMENT for table `tapahtumat`
 --
 ALTER TABLE `tapahtumat`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 
 --
 -- AUTO_INCREMENT for table `tilit`
 --
 ALTER TABLE `tilit`
-  MODIFY `tili_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `tili_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- Rajoitteet vedostauluille
