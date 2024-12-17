@@ -1,13 +1,9 @@
 sivun vaihto:
-jostai syyst jos tilisiirto numero ei mätsää ni rahat vaa katoo
-uuden käyttäjän luonti
+näyttää näytä_tili sivulla tapahtumat sivuina ja rahat - tai +
 
 Bogdan:
-normal user voi ilmoita tilin poistuminen adminille. jos poistuminen ilmoitus on tehty, voi myös undo sen.
-admin voi hyväksyä tilin poistuminne.
-HUOMIO! Älä poista oikeasti mitään tietokannasta. Vai merkata poistetuksi. (TINY INT 0 by default && not null)
 jos käyttäjä haluaa uuden tunnuksen
-älä käyttää <br>
+
 Study the history of web: html, css and js
 pagination for all lists.
 

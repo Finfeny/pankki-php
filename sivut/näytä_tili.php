@@ -45,16 +45,19 @@ session_start();
     <div id="Tapahtumat">                   <!-- tapahtumat -->
         <?php
             $tapahtumat = $conn->prepare(
-                "SELECT information
+                "SELECT information, date
                 FROM tapahtumat
-                WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id)");
+                WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id) ORDER BY date DESC");
                 $tapahtumat->execute(["account_id" => $_GET["tili_id"]]);
                 $tapahtumat = $tapahtumat->fetchAll();
-                
-            if ($tapahtumat) {
-                foreach ($tapahtumat as $tapahtuma)
-                    echo "<div class='tapahtuma'>" .$tapahtuma["information"]. "</div><br>";
             
+            if ($tapahtumat) {
+                foreach ($tapahtumat as $tapahtuma) {
+                    if (!$tapahtuma["date"]) {
+                        $tapahtuma["date"] = "ajankohta tuntematon";
+                    }
+                    echo "<div class='tapahtumaDesc'>" .$tapahtuma["information"]. "<div class'tapahtumaInfo'>" . explode(" ", $tapahtuma["date"])[1]. " ". explode(" ", $tapahtuma["date"])[0]. "</div></div>";
+                }
             } else {//      piilotetaan tapahtumat jos niitä ei ole
                 echo "<script>document.getElementById('Tapahtumat_teksti').style.display = 'none';</script>";
             }

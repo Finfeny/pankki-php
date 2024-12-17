@@ -14,18 +14,34 @@ a {
     font-weight: bold;
 }
 
+/*                                  ----------------------Login----------------------
+*/
 #logout {
     position: absolute;
     right: 20px;
 }
 
-.loginInput {
+.loginPageInput {
     width: 60vw;
+    padding-inline: 8px;
 }
 
-.loginButton {
-    width: 60vw + 10px;
+.loginPageButton {
+    width: 100%;
 }
+
+#buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#loginStatus {
+    padding-inline: 19vw;
+}
+
+/*                                  ----------------------Index.php----------------------
+*/
 
 #TilitBox {
     text-align: left;
@@ -85,12 +101,26 @@ a {
     border-radius: 5px;
 }
 
-#uusiTiliPoista {
+#PoistaTili {
     position: absolute;
     right: 25px;
     top: 50%;
     transform: translateY(-50%);
     background-color: #328D9B;
+    color: #FFFF;
+    border: none;
+    padding: 7px 10px 10px;
+    font-size: x-large;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#PeruTilinPoistaminen {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #89a3a7;
     color: #FFFF;
     border: none;
     padding: 7px 10px 10px;
@@ -118,7 +148,7 @@ margin: 10px;
 
 #Tapahtumat {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     background-color: #3a3a40;
     text-align: left;
 }
@@ -132,7 +162,8 @@ margin: 10px;
     display: none;
 }
 
-/* näytä_tili.php */
+/*                                  ----------------------näytä_tili.php----------------------
+*/
 
 #tilinimiBox {
     display: flex;
@@ -145,9 +176,21 @@ margin: 10px;
     margin-left: 30vw;
 }
 
+@media screen and (max-width: 900px) {
+
+    #logout {
+        font-size: 3.5vw;
+        padding: calc(20px + (2vw * -1));
+    }
+    
+    #title {
+        font-size: calc(2.5vw + 10px);
+    }
+}
 
 
-/* ADMIN */
+/*                                  ----------------------ADMIN----------------------
+*/
 
 h3 {
     margin: 0;
@@ -162,6 +205,15 @@ h3 {
     gap: 130px;
 }
 
+.pendingDel_tiliTaulu {
+    background: #383941;
+    margin-block: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    gap: 50px;
+}
+
 #pendAccHeader {
     display: flex;
     justify-content: space-around;
@@ -173,16 +225,4 @@ h3 {
 
 .pendAccTili {
     padding-left: 140px;
-}
-
-@media screen and (max-width: 900px) {
-
-    #logout {
-        font-size: 3.5vw;
-        padding: calc(20px + (2vw * -1));
-    }
-    
-    #title {
-        font-size: calc(2.5vw + 10px);
-    }
 }

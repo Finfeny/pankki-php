@@ -35,11 +35,11 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
 <?php
     // tän vois pistää queryy ku bindataa $_SESSION muuttuja joho käyttäjä ei pääse käsiks ni ei sillee oo välii katenoidaaks
     $userData = $conn->prepare(
-        "SELECT id, nimi, varat, tili_id, tilinimi, amount, IBAN
+        "SELECT id, nimi, varat, deleted, tili_id, tilinimi, amount, IBAN
         FROM kayttajat
         LEFT JOIN tilit
-        ON kayttaja_id = id
-        WHERE id = :id");
+        ON kayttaja_id = id 
+        WHERE id = :id AND tilit.deleted != 2");
         $userData->execute(["id" => $_SESSION["user_id"]]);
         $userData = $userData->fetchAll();
         
@@ -47,10 +47,8 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         '<a id="logout" href="../logout.php">Kirjaudu ulos</a>';
 
         // jos käyttäjää ei löydy
-        echo $userData==null ? "<br><br>Käyttäjää ei löytynyt" : "";
-        if ($userData==null) {
-            echo "<script defer>document.getElementById('toiminnot').style.display = 'none';</script>";
-        } else {
+        echo $userData == null ? "<br><br>Käyttäjää ei löytynyt" : "";
+        if ($userData != null) {
             
             // laitettaa sessioon käyttäjän tiedot ja tilit
             $_SESSION["nimi"] = $userData[0]["nimi"];
@@ -60,6 +58,12 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
     ?>
 
 
+    <!--degub -->
+    <!-- <form method="POST" action="index.php">
+        <input name="user_id" placeholder="<?php echo $_SESSION["user_id"] ?>">
+        <button type="submit">id</button>
+    </form> -->
+
     <!-- pankki -->
     <div id="container" class="<?php echo $userData==null ? 'hidden' : ''; ?>">
         <h2>kirjautunut <?php echo $_SESSION["nimi"] ?> käyttäjänä</h2>
@@ -67,7 +71,6 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         <div id="toiminnot">                   <!-- toiminnot -->
             <a class="toiminto" href="omasiirto_sivu.php">Oma Siirto</a>
             <a class="toiminto" href="tilisiirto_sivu.php">Tilisiirto</a>
-        
         </div>
 
 
@@ -100,11 +103,21 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                     $data["amount"]."£<br>". 
                     (!empty($data["IBAN"]) ? $data["IBAN"] : "Tilillä ei ole numeroa. Odotetaan adminin hyväksyntää...
                         <script>
-                            document.querySelector('.tili:last-child').style.color = 'red';
+                            document.querySelector('.tili:last-child').style.color = '#b0f4fff2';
                         </script>").
-                    ($data["amount"] != 0 ? "" :
-                        "<button id='uusiTiliPoista' onClick='event.stopPropagation(); window.location.href=`../posita_tili.php?tili_id=".$data["tili_id"]."`'>
+                        // poista tili nappi jos tilillä ei ole rahaa ja jos tili ei ole poistettu
+                    ($data["amount"] != 0 || $data["deleted"] != 0 ? "" :
+                        "<button id='PoistaTili' onClick='event.stopPropagation(); window.location.href=`../poista_tili.php?tili_id=".$data["tili_id"]."`'>
                             poista
+                        </button>").
+                        // kumoa poisto nappi jos tili on poistettu
+                    ($data["deleted"] == 0 ? "" :
+                        " Tili poistettu. Odotetaan adminin hyväksyntää...
+                        <script>
+                            document.querySelector('.tili:last-child').style.color = '#5d5d68';
+                        </script>
+                        <button id='PeruTilinPoistaminen' onClick='event.stopPropagation(); window.location.href=`../peru_tilin_poistaminen.php?tili_id=".$data["tili_id"]."`'>
+                            kumoa
                         </button>").
                     "</div>";       // stopPropagation käytettää ettei kutsu näytä_tili vaa menee suoraa posita_tili
                 ?>
@@ -131,15 +144,27 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         </div>
         <div id="Tapahtumat">                   <!-- tapahtumat -->
             <?php
-                $tapahtumat = $conn->prepare(
-                    "SELECT information, date
-                    FROM tapahtumat 
-                    WHERE (reciver_account_id = :account_id OR sender_account_id = :account_id) 
-                    LIMIT :limit");
-                    $tapahtumat->bindParam("limit", $_SESSION["limit"], PDO::PARAM_INT);
-                    $tapahtumat->bindParam("account_id", $userData[0]["tili_id"], PDO::PARAM_INT);
-                    $tapahtumat->execute();
-                    $tapahtumat = $tapahtumat->fetchAll();
+                $query = "SELECT information, date FROM tapahtumat WHERE (";
+
+                $conditions = [];
+                $params = [];
+                foreach ($userData as $index => $data) {
+                    $conditions[] = "reciver_account_id = :account_id_$index";
+                    $conditions[] = "sender_account_id = :account_id_$index";
+                    $params["account_id_$index"] = $data["tili_id"];
+                }
+
+                $query .= implode(" OR ", $conditions) . ") ORDER BY date DESC LIMIT :limit";
+
+                $tapahtumat = $conn->prepare($query);
+                $tapahtumat->bindValue(":limit", $_SESSION["limit"], PDO::PARAM_INT);
+                
+                foreach ($params as $key => $value) {
+                    $tapahtumat->bindValue(":$key", $value, PDO::PARAM_INT);
+                }
+                
+                $tapahtumat->execute();
+                $tapahtumat = $tapahtumat->fetchAll();
                     
                 if ($tapahtumat) {
                     foreach ($tapahtumat as $tapahtuma) {
@@ -154,12 +179,6 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
             ?>
         </div>
     </div>
-
-    <!--degub -->
-    <form method="POST" action="index.php">
-        <input name="user_id" placeholder="<?php echo $_SESSION["user_id"] ?>">
-        <button type="submit">h</button>
-    </form>
 </body>
 <script>
     
