@@ -59,10 +59,11 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
 
 
     <!--degub -->
-    <form method="POST" action="index.php">
+    <!-- <form method="POST" action="index.php">
         <input name="user_id" placeholder="<?php echo $_SESSION["user_id"] ?>">
         <button type="submit">id</button>
-    </form>
+    </form> -->
+
     <!-- pankki -->
     <div id="container" class="<?php echo $userData==null ? 'hidden' : ''; ?>">
         <h2>kirjautunut <?php echo $_SESSION["nimi"] ?> käyttäjänä</h2>
@@ -70,7 +71,6 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
         <div id="toiminnot">                   <!-- toiminnot -->
             <a class="toiminto" href="omasiirto_sivu.php">Oma Siirto</a>
             <a class="toiminto" href="tilisiirto_sivu.php">Tilisiirto</a>
-        
         </div>
 
 

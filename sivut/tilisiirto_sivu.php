@@ -20,6 +20,9 @@ session_start();
         echo "<div style='display: flex; gap: 10px;'>Tilitä<select name='sender_account_IBAN'>";
 
         foreach ($_SESSION["userData"] as $data) {
+            
+            if ($data["deleted"] == 1)
+                continue;
             echo "<option value='".$data["tili_id"]. "/".$data["IBAN"]."'>".$data["tilinimi"]."</option>";
         }
         echo "</select></div>";

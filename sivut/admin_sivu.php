@@ -69,7 +69,7 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
                 <div id='pendAccHeader'>
                     <h3>nimi</h3>
                     <h3>tilinimi</h3>
-                    <h3>IBAN</h3>
+                    <h3>Poista</h3>
                 </div>
             <?php       //listataan tilit ja niiden tiedot
                 if ($pending_account_deletions) {
@@ -91,12 +91,13 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
             ?>
     </div>
         <!--degub -->
-        <form method="POST" action="index.php">
+        <!-- <form method="POST" action="index.php">
             <input name="user_id" placeholder="<?php echo $_SESSION["user_id"] ?>">
             <button type="submit">id</button>
-        </form>
+        </form> -->
 </body>
 <script>
+    
     function GenerateUserIBAN(e) {
         console.log(e);
         let IBAN = "FI";
@@ -117,5 +118,6 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] != 1) {
         tili_id = $(".pendAccId", e.parentElement).val();
         window.location.href=`../accept_account_deletion.php?tili_id=${tili_id}`
     }
+
 </script>
 </html>

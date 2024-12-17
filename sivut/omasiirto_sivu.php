@@ -23,6 +23,10 @@ session_start();
                     onChange='tiliSaldo(this)'>";
 
             foreach ($_SESSION["userData"] as $data) {
+
+                //jos tili on poistettu ni ei sit pysty siirtää rahaa sinn
+                if ($data["deleted"] == 1)
+                    continue;
                 // tä o iha kätevä tapa laittaa paljo parametrei ja value="2|3214310" täs
                 echo "<option 
                         value='"
@@ -39,6 +43,9 @@ session_start();
                     onChange='tiliSaldo(this)'>";
 
             foreach ($_SESSION["userData"] as $data) {
+
+                if ($data["deleted"] == 1)
+                    continue;
                 echo 
                 "<option 
                     value='"

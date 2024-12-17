@@ -2,8 +2,6 @@
 include 'dbyhteys.php';
 session_start();
 
-var_dump($_POST);
-
 $amount = $_POST["amount"];
 $sender_account_IBAN = explode("/", $_POST["sender_account_IBAN"])[1];
 $reciver_account_IBAN = $_POST["reciver_account_IBAN"];
@@ -30,12 +28,8 @@ foreach ($_SESSION["userData"] as $data) {
 }
 
 $information = $_SESSION["userData"][0]["nimi"] . " Siirsi " . $amount . "£ tililtä " . $sender_account_IBAN . " tilille " . $reciver_account_IBAN;
-// echo $information;
 
-echo "<br>";
-echo "<br>";
-echo "<br>";
-
+try {
 $conn->prepare(
 "INSERT INTO tapahtumat (amount, sender_account_id, reciver_account_id, information, date)
 VALUES (:amount, :sender_account_id, :reciver_account_id, :information, NOW())"
@@ -45,5 +39,22 @@ VALUES (:amount, :sender_account_id, :reciver_account_id, :information, NOW())"
     "reciver_account_id" => $reciver_account_id, 
     "information" => $information
 ]);
+} catch (PDOException $e) {
+    if ($e->errorInfo[1] == 1644) {
+        $_SESSION["error"] = $e->errorInfo[2];
+        header("Location: sivut/tilisiirto_sivu.php");
+        die();
+    } else {
+        $_SESSION["error"] = "Tapahtuma epäonnistui";
+        header("Location: sivut/tilisiirto_sivu.php");
+        die();
+    }
+}
 
 header("Location: sivut/index.php");
+
+
+
+
+
+// Fatal error: Uncaught PDOException: SQLSTATE[45000]: <<Unknown error>>: 1644 Vastaanottajan tili on poistettu. Mitä nää koetat? in C:\xampp\htdocs\Koulu\pankki-php\tilisiirto.php:42 Stack trace: #0 C:\xampp\htdocs\Koulu\pankki-php\tilisiirto.php(42): PDOStatement->execute(Array) #1 {main} thrown in C:\xampp\htdocs\Koulu\pankki-php\tilisiirto.php on line 42
