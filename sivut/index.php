@@ -130,18 +130,24 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
             </div>
         </div>
         <div id="TopTapahtumat">
+            <form action="../fetch.php" method="POST" style="padding-top: 20px;">
+                <button name="pageButton" value="last">Edellinen sivu</button>
+            </form>
             <p id="Tapahtumat_teksti">Tapahtumat</p>
             <form action="../fetch.php" method="POST" style="padding-top: 20px;">
-                <select name="limit" id="Tapahtumat_valinta" onChange="this.form.submit()">
-                    <option value="" selected>max</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+                <button name="pageButton" value="next">Seuraava sivu</button>
             </form>
         </div>
+        <form action="../fetch.php" method="POST" style="padding-bottom: 20px;">
+            <select name="limit" id="Tapahtumat_valinta" onChange="this.form.submit()">
+                <option value="" selected>max</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </form>
         <div id="Tapahtumat">                   <!-- tapahtumat -->
             <?php
                 $query = "SELECT information, date FROM tapahtumat WHERE (";
@@ -154,14 +160,17 @@ if (!isset($_SESSION["limit"]) || $_SESSION["limit"] == null) {
                     $params["account_id_$index"] = $data["tili_id"];
                 }
 
-                $query .= implode(" OR ", $conditions) . ") ORDER BY date DESC LIMIT :limit";
+                $query .= implode(" OR ", $conditions) . ") ORDER BY date DESC LIMIT :limit OFFSET :offset";
 
                 $tapahtumat = $conn->prepare($query);
                 $tapahtumat->bindValue(":limit", $_SESSION["limit"], PDO::PARAM_INT);
+                $tapahtumat->bindValue(":offset", $_SESSION["offset"], PDO::PARAM_INT);
                 
                 foreach ($params as $key => $value) {
                     $tapahtumat->bindValue(":$key", $value, PDO::PARAM_INT);
                 }
+
+                echo "page ".($_SESSION["offset"]/$_SESSION["limit"]+1)."<br>";
                 
                 $tapahtumat->execute();
                 $tapahtumat = $tapahtumat->fetchAll();
